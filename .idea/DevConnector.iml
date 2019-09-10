@@ -11,5 +11,9 @@
     <orderEntry type="library" name="@types/prettier" level="application" />
     <orderEntry type="library" name="@types/node" level="application" />
     <orderEntry type="library" name="@types/express" level="application" />
+    <orderEntry type="library" name="@types/config" level="application" />
+    <orderEntry type="library" name="@types/mongoose" level="application" />
+    <orderEntry type="library" name="@types/bcryptjs" level="application" />
+    <orderEntry type="library" name="@types/jsonwebtoken" level="application" />
   </component>
 </module>

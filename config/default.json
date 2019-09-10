@@ -1,3 +1,6 @@
 {
-  "mongoURI": "mongodb+srv://mada_if:wXBRcH5YBk9C8n4@devconnector-z8j9g.mongodb.net/test?retryWrites=true&w=majority"
+  "mongoURI": "mongodb+srv://mada_if:wXBRcH5YBk9C8n4@devconnector-z8j9g.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "mysecrettoken",
+  "githubClientId": "7fff402734420a98046b",
+  "githubClientSecret": "abdafe24218a72d7eb595fcb6cf5ee415ecaa653"
 }
