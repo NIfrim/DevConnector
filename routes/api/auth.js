@@ -1,28 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../../middleware/auth');
-const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
+const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
 
-// @route   GET api/auth
-// @desc    Test route
-// @access  Public
+const User = require('../../models/User');
+
+// @route    GET api/auth
+// @desc     Test route
+// @access   Public
 router.get('/', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
-    return res.json(user);
-  } catch (e) {
-    console.error(e.message);
-    return res.status(500).send('Server error');
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
-// @route   POST api/users
-// @desc    Authenticate user and get token
-// @access  Public
+// @route    POST api/auth
+// @desc     Authenticate user & get token
+// @access   Public
 router.post(
   '/',
   [
@@ -30,16 +31,14 @@ router.post(
     check('password', 'Password is required').exists()
   ],
   async (req, res) => {
-    // Errors handler
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
     try {
-      // Check Credentials
       let user = await User.findOne({ email });
 
       if (!user) {
@@ -56,24 +55,24 @@ router.post(
           .json({ errors: [{ msg: 'Invalid Credentials' }] });
       }
 
-      // Return jsonwebtoken
       const payload = {
         user: {
           id: user.id
         }
       };
+
       jwt.sign(
         payload,
         config.get('jwtSecret'),
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
-          return res.json({ token });
+          res.json({ token });
         }
       );
     } catch (err) {
       console.error(err.message);
-      return res.status(500).send('Server error');
+      res.status(500).send('Server error');
     }
   }
 );

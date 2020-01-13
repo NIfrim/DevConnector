@@ -15,5 +15,9 @@
     <orderEntry type="library" name="@types/mongoose" level="application" />
     <orderEntry type="library" name="@types/bcryptjs" level="application" />
     <orderEntry type="library" name="@types/jsonwebtoken" level="application" />
+    <orderEntry type="library" name="@types/react-router-dom" level="application" />
+    <orderEntry type="library" name="@types/uuid" level="application" />
+    <orderEntry type="library" name="@types/react-redux" level="application" />
+    <orderEntry type="library" name="@types/prop-types" level="application" />
   </component>
 </module>

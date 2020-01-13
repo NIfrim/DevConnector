@@ -35,22 +35,22 @@ const ProfileSchema = new mongoose.Schema({
         required: true
       },
       company: {
-        type: String
-      },
-      website: {
-        type: String
+        type: String,
+        required: true
       },
       location: {
         type: String
       },
       from: {
-        type: Date
+        type: Date,
+        required: true
       },
       to: {
         type: Date
       },
       current: {
-        type: Boolean
+        type: Boolean,
+        default: false
       },
       description: {
         type: String
@@ -67,7 +67,7 @@ const ProfileSchema = new mongoose.Schema({
         type: String,
         required: true
       },
-      field_of_study: {
+      fieldofstudy: {
         type: String,
         required: true
       },
@@ -87,25 +87,23 @@ const ProfileSchema = new mongoose.Schema({
       }
     }
   ],
-  social: [
-    {
-      youtube: {
-        type: String
-      },
-      twitter: {
-        type: String
-      },
-      facebook: {
-        type: String
-      },
-      linkedin: {
-        type: String
-      },
-      instagram: {
-        type: String
-      }
+  social: {
+    youtube: {
+      type: String
+    },
+    twitter: {
+      type: String
+    },
+    facebook: {
+      type: String
+    },
+    linkedin: {
+      type: String
+    },
+    instagram: {
+      type: String
     }
-  ],
+  },
   date: {
     type: Date,
     default: Date.now

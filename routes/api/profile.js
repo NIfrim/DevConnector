@@ -8,6 +8,7 @@ const { check, validationResult } = require('express-validator');
 // Data models
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
+const Post = require('../../models/Post');
 
 // @route   GET api/profile/me
 // @desc    Get current user profile
@@ -36,11 +37,6 @@ router.get('/me', auth, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const profiles = await Profile.find().populate('user', ['name', 'avatar']);
-
-    if (!profiles) {
-      return res.status(400).json({ msg: 'No User Profiles' });
-    }
-
     return res.json(profiles);
   } catch (err) {
     console.error(err.message);
@@ -57,7 +53,7 @@ router.get('/user/:user_id', async (req, res) => {
       user: req.params.user_id
     }).populate('user', ['name', 'avatar']);
 
-    if (!profile) {
+    if (profile === null) {
       return res.status(400).json({
         msg: `Profile not found for user with id: ${req.params.user_id}`
       });
@@ -157,7 +153,6 @@ router.post(
       console.error(err.message);
       return res.status(500).send('Server Error');
     }
-    res.send('Profile works');
   }
 );
 
@@ -166,8 +161,8 @@ router.post(
 // @access  Private
 router.delete('/', auth, async (req, res) => {
   try {
-    // @todo - remove users posts
-
+    // Remove posts
+    await Post.deleteMany({ user: req.user.id });
     // Remove profile
     await Profile.findOneAndRemove({ user: req.user.id });
     // Remove user
@@ -243,25 +238,23 @@ router.put(
 // @access  Private
 router.delete('/experience/:exp_id', auth, async (req, res) => {
   try {
-    // Find and remove experience
     const profile = await Profile.findOne({ user: req.user.id });
-    // Get the remove index
-    const expIndex = profile.experience
-      .map(item => item.id)
-      .indexOf(req.params.exp_id);
+    const expIds = profile.experience.map(exp => exp._id.toString());
+    // if i dont add .toString() it returns this weird mongoose coreArray and the ids are somehow objects and it still deletes anyway even if you put /experience/5
+    const removeIndex = expIds.indexOf(req.params.exp_id);
 
     // Remove from array and save
-    profile.experience.splice(expIndex, 1);
+    profile.experience.splice(removeIndex, 1);
     await profile.save();
 
-    return res.json({ msg: 'Experience removed' });
+    return res.status(200).json(profile);
   } catch (err) {
-    console.error(err.message);
-    return res.status(500).send('Server Error');
+    console.error(err);
+    return res.status(500).send({ msg: 'Server Error' });
   }
 });
 
-// Education
+// ProfileEducation
 // @route   PUT api/profile/education
 // @desc    Add profile education
 // @access  Private
@@ -276,7 +269,7 @@ router.put(
       check('degree', 'Degree is required')
         .not()
         .isEmpty(),
-      check('field_of_study', 'Field of study is required')
+      check('fieldofstudy', 'Field of study is required')
         .not()
         .isEmpty(),
       check('from', 'From Date is required')
@@ -293,7 +286,7 @@ router.put(
     const {
       school,
       degree,
-      field_of_study,
+      fieldofstudy,
       from,
       to,
       current,
@@ -303,7 +296,7 @@ router.put(
     const newEdu = {
       school,
       degree,
-      field_of_study,
+      fieldofstudy,
       from,
       to,
       current,
@@ -339,7 +332,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
     profile.education.splice(eduIndex, 1);
     await profile.save();
 
-    return res.json({ msg: 'Education removed' });
+    return res.status(200).json(profile);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send('Server Error');
@@ -365,14 +358,18 @@ router.get('/github/:username', (req, res) => {
       if (error) console.error(error);
 
       if (response.statusCode !== 200) {
-        return res.status(404).json({ msg: 'No Github profile found' });
+        return res.status(404).json({ msg: 'No ProfileGithub profile found' });
       }
-      return res.send(JSON.parse(body));
+      return res.status(200).json(JSON.parse(body));
     });
   } catch (err) {
     console.error(err.message);
     return res.status(500).send('Server Error');
   }
 });
+
+// @route   GET api/profile/github/:username
+// @desc    Get user repos from github
+// @access  Private
 
 module.exports = router;
