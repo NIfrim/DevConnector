@@ -41,6 +41,9 @@ img {
   overflow: hidden;
   padding: 6rem 3rem;
 }
+.container:empty {
+  display: none;
+}
 
 /* Text Styles*/
 .x-large {

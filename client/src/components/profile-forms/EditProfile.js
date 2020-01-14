@@ -42,7 +42,7 @@ const EditProfile = ({
       youtube: !loading || profile.social ? profile.social.youtube : '',
       instagram: !loading || profile.social ? profile.social.instagram : ''
     });
-  }, [loading, getCurrProfile, setFormData]);
+  }, [loading, profile, getCurrProfile, setFormData]);
 
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
 

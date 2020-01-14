@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Components
@@ -17,7 +17,7 @@ import EditProfile from './components/profile-forms/EditProfile';
 // Redux
 import { Provider } from 'react-redux';
 import store from './store';
-import { loadUser, logOut } from './actions/auth';
+import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 import './App.css';
 import AddExperience from './components/profile-forms/AddExperience';
